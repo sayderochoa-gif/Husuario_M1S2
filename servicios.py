@@ -1,61 +1,115 @@
-
-
+# Función para agregar productos
 def agregar_producto(inventario):
+    try:
+        nombre = input("Nombre: ")
+        precio = float(input("Precio: "))
+        cantidad = int(input("Cantidad: "))
 
-    nombre = input("Nombre del producto: ")
-    precio = float(input("Precio: "))
-    cantidad = int(input("Cantidad: "))
+        # Validamos que no sean negativos
+        if precio < 0 or cantidad < 0:
+            print("Datos inválidos.")
+            return
 
-    producto = {
-        "nombre": nombre,
-        "precio": precio, 
-        "cantidad": cantidad
-    }
+        # Creamos el producto como diccionario
+        producto = {
+            "nombre": nombre,
+            "precio": precio,
+            "cantidad": cantidad
+        }
 
-    inventario.append(producto)
-    print("="*42)
-    print("¡El producto se ha agregado correctamente!")
-    print("="*42)
+        # Lo agregamos a la lista
+        inventario.append(producto)
+        print("Producto agregado.")
 
+    except:
+        print("Error al ingresar datos.")
+
+
+# Función para mostrar inventario
 def mostrar_inventario(inventario):
-
     if len(inventario) == 0:
-        print("="*56)
-        print("El inventario está vacío. No hay productos para mostrar ")
-        print("="*56)
-
+        print("Inventario vacío.")
     else:
-        print("=== Inventario ===")
-        print()
-        for producto in inventario:
-            print(f"Producto: {producto['nombre']} | Precio: {producto['precio']} | Cantidad: {producto['cantidad']}")
-        print()
+        for p in inventario:
+            print(p["nombre"], "|", p["precio"], "|", p["cantidad"])
 
+
+# Función para buscar un producto
+def buscar_producto(inventario, nombre):
+    for p in inventario:
+        if p["nombre"] == nombre:
+            return p  # retorna el producto
+    return None  # si no lo encuentra
+
+
+# Función para actualizar un producto
+def actualizar_producto(inventario):
+    nombre = input("Producto a actualizar: ")
+    producto = buscar_producto(inventario, nombre)
+
+    if producto == None:
+        print("Producto no encontrado.")
+        return
+
+    try:
+        # Permite actualizar solo lo que el usuario quiera
+        nuevo_precio = input("Nuevo precio (Enter para omitir): ")
+        nueva_cantidad = input("Nueva cantidad (Enter para omitir): ")
+
+        if nuevo_precio != "":
+            producto["precio"] = float(nuevo_precio)
+
+        if nueva_cantidad != "":
+            producto["cantidad"] = int(nueva_cantidad)
+
+        print("Producto actualizado.")
+
+    except:
+        print("Error en los datos.")
+
+
+# Función para eliminar producto
+def eliminar_producto(inventario):
+    nombre = input("Producto a eliminar: ")
+
+    for i in range(len(inventario)):
+        if inventario[i]["nombre"] == nombre:
+            del inventario[i]  # elimina el producto
+            print("Producto eliminado.")
+            return
+
+    print("Producto no encontrado.")
+
+
+# Función de estadísticas
 def calcular_estadisticas(inventario):
-
     if len(inventario) == 0:
-        print("="*33)
-        print("No se pueden calcular estadísticas. El inventario está vacío. ")
-        print("="*33)
+        print("Inventario vacío.")
+        return
 
-    else:
-        valor_total = 0
-        cantidad_total = 0
+    unidades = 0
+    valor_total = 0
 
-        for producto in inventario:
-            valor_total = valor_total + (producto["precio"] * producto["cantidad"])
-            cantidad_total = cantidad_total + producto["cantidad"]
+    # Calculamos totales
+    for p in inventario:
+        unidades += p["cantidad"]
+        valor_total += p["precio"] * p["cantidad"]
 
-        print("=== Estadísticas ===")
-        print(f"Valor total del inventario: {valor_total}")
-        print(f"Cantidad total de productos: {cantidad_total}. ")
+    # Inicializamos con el primero
+    producto_caro = inventario[0]
+    producto_stock = inventario[0]
 
-def buscar_productos(inventario,nombre):
+    # Buscamos el más caro y el de mayor stock
+    for p in inventario:
+        if p["precio"] > producto_caro["precio"]:
+            producto_caro = p
 
-    nombre = input("Ingrese el nombre del producto que desea buscar: ")
-    for producto in inventario:
-        if producto["nombre"] == nombre:
-            print("¡Producto encontrado en el inventario! ")
-            print(f"Nombre del producto: {producto['nombre']} | Precio: {producto['precio']} | Cantidad: {producto['cantidad']}")
-        else: 
-            print(f"No se ha encontrado el producto {nombre} en el inventario. ")
+        if p["cantidad"] > producto_stock["cantidad"]:
+            producto_stock = p
+
+    # Mostramos resultados
+    print("\n=== ESTADÍSTICAS ===")
+    print("Unidades totales:", unidades)
+    print("Valor total:", valor_total)
+    print("Producto más caro:", producto_caro["nombre"], producto_caro["precio"])
+    print("Mayor stock:", producto_stock["nombre"], producto_stock["cantidad"])
