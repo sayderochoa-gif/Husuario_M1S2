@@ -8,8 +8,6 @@ inventario = []
 # Variable para controlar el menú
 opcion = ""
 
-print("=== BIENVENIDO AL SISTEMA DE INVENTARIO ===")
-
 # Bucle del menú (sin usar while True)
 while opcion != "9":
 
